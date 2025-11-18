@@ -20,9 +20,9 @@ export default function DashboardAdmin({ onNavigate }) {
             onClick={() => onNavigate("productos")}
           />
           <Card
-            title="Órdenes"
-            subtitle="Monitoreo cocina"
-            onClick={() => onNavigate("cocina")}
+            title="Mesas"
+            subtitle="Adminsitracion de Mesas"
+            onClick={() => onNavigate("mesas")}
           />
         </div>
       </div>

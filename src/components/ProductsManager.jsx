@@ -7,44 +7,162 @@ export default function ProductsManager({ onBack }) {
     { id: 3, nombre: "Empanadas", stock: 20, receta: "Pino, harina, huevo, aceituna" },
   ]);
 
+  const [modo, setModo] = useState("lista"); // "lista" | "crear"
+
+  const [form, setForm] = useState({
+    nombre: "",
+    stock: "",
+    receta: "",
+  });
+
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const crearProducto = (e) => {
+    e.preventDefault();
+
+    const nuevo = {
+      id: productos.length + 1,
+      nombre: form.nombre,
+      stock: Number(form.stock),
+      receta: form.receta,
+    };
+
+    setProductos([...productos, nuevo]);
+    setForm({ nombre: "", stock: "", receta: "" });
+    setModo("lista");
+  };
+
+  // -------------------------------------------------------
+  // MODO LISTA
+  // -------------------------------------------------------
+  if (modo === "lista") {
+    return (
+      <div className="bg-white p-6 rounded-xl shadow-md">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-semibold text-indigo-600">
+            Gestión de Productos
+          </h2>
+
+          {onBack && (
+            <button
+              onClick={onBack}
+              className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md"
+            >
+              Volver
+            </button>
+          )}
+        </div>
+
+        <h1 className="text-3xl font-bold text-red-600 mb-4">PRODUCTOS MANAGER ACTIVO</h1>
+
+        <table className="w-full text-left border-collapse mb-6">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="p-2 border">ID</th>
+              <th className="p-2 border">Producto</th>
+              <th className="p-2 border">Stock</th>
+              <th className="p-2 border">Receta</th>
+            </tr>
+          </thead>
+          <tbody>
+            {productos.map((p) => (
+              <tr key={p.id}>
+                <td className="p-2 border">{p.id}</td>
+                <td className="p-2 border">{p.nombre}</td>
+                <td className="p-2 border">{p.stock}</td>
+                <td className="p-2 border">{p.receta}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <button
+          onClick={() => setModo("crear")}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md"
+        >
+          Crear Producto
+        </button>
+      </div>
+    );
+  }
+
+  // -------------------------------------------------------
+  // MODO CREAR PRODUCTO
+  // -------------------------------------------------------
   return (
     <div className="bg-white p-6 rounded-xl shadow-md">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold text-indigo-600">
-          Gestión de Productos
+          Crear Nuevo Producto
         </h2>
-        {onBack && (
-          <button
-            onClick={onBack}
-            className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md"
-          >
-            Volver
-          </button>
-        )}
+
+        <button
+          onClick={() => setModo("lista")}
+          className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md"
+        >
+          Volver
+        </button>
       </div>
 
-      <h1 className="text-3xl font-bold text-red-600 mb-4">PRODUCTOS MANAGER ACTIVO</h1>
+      <form onSubmit={crearProducto} className="space-y-4">
 
-      <table className="w-full text-left border-collapse">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="p-2 border">ID</th>
-            <th className="p-2 border">Producto</th>
-            <th className="p-2 border">Stock</th>
-            <th className="p-2 border">Receta</th>
-          </tr>
-        </thead>
-        <tbody>
-          {productos.map((p) => (
-            <tr key={p.id}>
-              <td className="p-2 border">{p.id}</td>
-              <td className="p-2 border">{p.nombre}</td>
-              <td className="p-2 border">{p.stock}</td>
-              <td className="p-2 border">{p.receta}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+        <div>
+          <label className="block text-sm mb-1">Nombre del Producto</label>
+          <input
+            type="text"
+            name="nombre"
+            value={form.nombre}
+            onChange={handleChange}
+            required
+            className="border rounded w-full p-2"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm mb-1">Stock</label>
+          <input
+            type="number"
+            name="stock"
+            value={form.stock}
+            onChange={handleChange}
+            required
+            className="border rounded w-full p-2"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm mb-1">Receta</label>
+          <textarea
+            name="receta"
+            value={form.receta}
+            onChange={handleChange}
+            required
+            className="border rounded w-full p-2 h-24"
+          ></textarea>
+        </div>
+
+        <div className="flex gap-3">
+          <button
+            type="submit"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md"
+          >
+            Guardar Producto
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setModo("lista")}
+            className="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded-md"
+          >
+            Cancelar
+          </button>
+        </div>
+      </form>
     </div>
   );
 }

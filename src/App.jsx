@@ -11,12 +11,21 @@ import CocinaBoard from "./components/CocinaBoard";
 import BodegaView from "./components/BodegaView";
 import FinanzasView from "./components/FinanzasView";
 import ProductsManager from "./components/ProductsManager";
+import Soporte from "./components/Soporte";
+import MesasView from "./components/MesasView";
+import RecuperarPassword from "./components/RecuperarPassword";
 
 export default function App() {
   const [role, setRole] = useState(null);
   const [user, setUser] = useState(null);
   const [view, setView] = useState("home");
 
+  // 👉 Mostrar Recuperar Password
+  if (view === "recuperar") {
+    return <RecuperarPassword onBack={() => setView("home")} />;
+  }
+
+  // 👉 Mostrar Login si no hay rol
   if (!role)
     return (
       <Login
@@ -25,6 +34,7 @@ export default function App() {
           setUser(u);
           setView("dashboard");
         }}
+        onForgot={() => setView("recuperar")}
       />
     );
 
@@ -41,8 +51,9 @@ export default function App() {
         onNavigate={setView}
       />
       <main className="p-6 max-w-6xl mx-auto">
+
         {/* CLIENTE */}
-        {role === "cliente" && <ClienteMenu />}
+        {role === "cliente" && view === "dashboard" && <ClienteMenu />}
 
         {/* ADMIN */}
         {role === "admin" && view === "dashboard" && (
@@ -52,15 +63,22 @@ export default function App() {
         {role === "admin" && view === "productos" && (
           <ProductsManager onBack={() => setView("dashboard")} />
         )}
+        {role === "admin" && view === "mesas" && <MesasView />}
+
+        {view === "soporte" && (
+          <Soporte onBack={() => setView("dashboard")} />
+        )}
 
         {/* BODEGA */}
-        {role === "bodega" && view === "bodega" && <BodegaView />}
+        {role === "bodega" && view === "dashboard" && <BodegaView />}
 
-        {/* Otros roles */}
-        {role === "cocina" && <CocinaBoard />}
-        {role === "finanzas" && <FinanzasView />}
+        {/* COCINA */}
+        {role === "cocina" && view === "dashboard" && <CocinaBoard />}
+
+        {/* FINANZAS */}
+        {role === "finanzas" && view === "dashboard" && <FinanzasView />}
+
       </main>
     </div>
   );
 }
-
